@@ -96,6 +96,22 @@ export interface CreateLetterRequest {
      */
     onInsufficientFunds?: CreateLetterRequestOnInsufficientFundsEnum;
     /**
+     * Пробный прогон: запрос проходит ПОЛНУЮ реальную валидацию (ключ,
+     * scope, IP, файлы, адреса получателей, промокод) и возвращает
+     * расчёт цены — но письмо в итоге не создаётся и средства не
+     * списываются. Ответ — `200` со схемой `DryRunResult` (вместо
+     * `201`/`Letter`). Ошибки валидации возвращаются теми же кодами,
+     * что и при реальной отправке (400/422) — это честный тест
+     * интеграции. `Idempotency-Key` при `dry_run` игнорируется;
+     * `callback_url` не регистрируется; баланс НЕ проверяется
+     * (тестируйте хоть с нулевым балансом — сумма к списанию будет
+     * в `pricing.total_minor`).
+     * 
+     * @type {boolean}
+     * @memberof CreateLetterRequest
+     */
+    dryRun?: boolean;
+    /**
      * HTTPS-URL для колбеков по этому письму. Если не указан — используйте поллинг.
      * @type {string}
      * @memberof CreateLetterRequest
@@ -149,6 +165,7 @@ export function CreateLetterRequestFromJSONTyped(json: any, ignoreDiscriminator:
         'promoCode': json['promo_code'] == null ? undefined : json['promo_code'],
         'onPromoInvalid': json['on_promo_invalid'] == null ? undefined : json['on_promo_invalid'],
         'onInsufficientFunds': json['on_insufficient_funds'] == null ? undefined : json['on_insufficient_funds'],
+        'dryRun': json['dry_run'] == null ? undefined : json['dry_run'],
         'callbackUrl': json['callback_url'] == null ? undefined : json['callback_url'],
     };
 }
@@ -171,6 +188,7 @@ export function CreateLetterRequestToJSONTyped(value?: CreateLetterRequest | nul
         'promo_code': value['promoCode'],
         'on_promo_invalid': value['onPromoInvalid'],
         'on_insufficient_funds': value['onInsufficientFunds'],
+        'dry_run': value['dryRun'],
         'callback_url': value['callbackUrl'],
     };
 }

@@ -2,6 +2,8 @@
 /* eslint-disable */
 export * from './Balance';
 export * from './CreateLetterRequest';
+export * from './DryRunResult';
+export * from './DryRunResultPricing';
 export * from './FileSource';
 export * from './Letter';
 export * from './LetterClass';

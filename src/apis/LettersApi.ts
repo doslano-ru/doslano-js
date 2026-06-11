@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   CreateLetterRequest,
+  DryRunResult,
   Letter,
   LetterStatus,
   ListLetters200Response,
@@ -25,6 +26,8 @@ import type {
 import {
     CreateLetterRequestFromJSON,
     CreateLetterRequestToJSON,
+    DryRunResultFromJSON,
+    DryRunResultToJSON,
     LetterFromJSON,
     LetterToJSON,
     LetterStatusFromJSON,
@@ -68,7 +71,7 @@ export class LettersApi extends runtime.BaseAPI {
      * Создаёт и (по умолчанию) сразу оплачивает с баланса одно заказное письмо одним запросом. Опись формируется автоматически на нашей стороне.  Требуется scope `letters:write`. 
      * Отправить письмо
      */
-    async createLetterRaw(requestParameters: CreateLetterOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Letter>> {
+    async createLetterRaw(requestParameters: CreateLetterOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DryRunResult>> {
         if (requestParameters['createLetterRequest'] == null) {
             throw new runtime.RequiredError(
                 'createLetterRequest',
@@ -102,14 +105,14 @@ export class LettersApi extends runtime.BaseAPI {
             body: CreateLetterRequestToJSON(requestParameters['createLetterRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LetterFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => DryRunResultFromJSON(jsonValue));
     }
 
     /**
      * Создаёт и (по умолчанию) сразу оплачивает с баланса одно заказное письмо одним запросом. Опись формируется автоматически на нашей стороне.  Требуется scope `letters:write`. 
      * Отправить письмо
      */
-    async createLetter(requestParameters: CreateLetterOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Letter> {
+    async createLetter(requestParameters: CreateLetterOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DryRunResult> {
         const response = await this.createLetterRaw(requestParameters, initOverrides);
         return await response.value();
     }

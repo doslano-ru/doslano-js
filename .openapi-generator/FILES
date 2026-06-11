@@ -10,6 +10,8 @@ src/apis/index.ts
 src/index.ts
 src/models/Balance.ts
 src/models/CreateLetterRequest.ts
+src/models/DryRunResult.ts
+src/models/DryRunResultPricing.ts
 src/models/FileSource.ts
 src/models/Letter.ts
 src/models/LetterClass.ts
