@@ -46,7 +46,7 @@ export interface RecipientInput {
      */
     partyType?: PartyType;
     /**
-     * 
+     * ИНН (10 цифр).
      * @type {string}
      * @memberof RecipientInput
      */
