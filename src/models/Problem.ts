@@ -44,7 +44,7 @@ export interface Problem {
      */
     detail?: string;
     /**
-     * Машиночитаемый код ошибки (напр. `insufficient_funds`, `validation_failed`, `forbidden_scope`).
+     * Машиночитаемый код ошибки (напр. `insufficient_funds`, `validation_failed`, `address_validation_failed`, `forbidden_scope`).
      * @type {string}
      * @memberof Problem
      */

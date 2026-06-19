@@ -28,17 +28,17 @@ import {
  */
 export interface RecipientInput {
     /**
-     * ФИО или название получателя.
+     * ФИО или название получателя. При resolve_address_by_inn=true ПЕРЕЗАПИСЫВАЕТСЯ наименованием из ЕГРЮЛ.
      * @type {string}
      * @memberof RecipientInput
      */
     name: string;
     /**
-     * Адрес получателя (строкой; нормализуется на нашей стороне).
+     * Адрес получателя (строкой; нормализуется на нашей стороне). Можно опустить при resolve_address_by_inn=true.
      * @type {string}
      * @memberof RecipientInput
      */
-    address: string;
+    address?: string;
     /**
      * 
      * @type {PartyType}
@@ -51,6 +51,12 @@ export interface RecipientInput {
      * @memberof RecipientInput
      */
     inn?: string;
+    /**
+     * Авто-резолв адреса по ИНН из ЕГРЮЛ. Работает только для party_type=organization с заданным inn: адрес и наименование берутся из реестра (DaData findById/party, головная организация), address можно не передавать. Если резолв не удался и address не передан — 422 recipient_address_unresolved; флаг без inn или не для organization — 422 recipient_resolve_requires_inn. Если передан и address — он fallback при неудаче резолва.
+     * @type {boolean}
+     * @memberof RecipientInput
+     */
+    resolveAddressByInn?: boolean;
 }
 
 
@@ -60,7 +66,6 @@ export interface RecipientInput {
  */
 export function instanceOfRecipientInput(value: object): value is RecipientInput {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('address' in value) || value['address'] === undefined) return false;
     return true;
 }
 
@@ -75,9 +80,10 @@ export function RecipientInputFromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'name': json['name'],
-        'address': json['address'],
+        'address': json['address'] == null ? undefined : json['address'],
         'partyType': json['party_type'] == null ? undefined : PartyTypeFromJSON(json['party_type']),
         'inn': json['inn'] == null ? undefined : json['inn'],
+        'resolveAddressByInn': json['resolve_address_by_inn'] == null ? undefined : json['resolve_address_by_inn'],
     };
 }
 
@@ -96,6 +102,7 @@ export function RecipientInputToJSONTyped(value?: RecipientInput | null, ignoreD
         'address': value['address'],
         'party_type': PartyTypeToJSON(value['partyType']),
         'inn': value['inn'],
+        'resolve_address_by_inn': value['resolveAddressByInn'],
     };
 }
 

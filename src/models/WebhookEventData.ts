@@ -55,6 +55,12 @@ export interface WebhookEventData {
      * @memberof WebhookEventData
      */
     error?: string;
+    /**
+     * Фактически списанная стоимость отправления ЭТОМУ получателю, в копейках (доля дисконтированного тотала письма с учётом промокода). Присутствует только в `recipient.sent` — отправление реально ушло и оплачено. В `recipient.failed` отсутствует: при провале сумма возвращается на баланс.
+     * @type {number}
+     * @memberof WebhookEventData
+     */
+    amountMinor?: number;
 }
 
 /**
@@ -82,6 +88,7 @@ export function WebhookEventDataFromJSONTyped(json: any, ignoreDiscriminator: bo
         'shipmentNumber': json['shipment_number'] == null ? undefined : json['shipment_number'],
         'trackingNumber': json['tracking_number'] == null ? undefined : json['tracking_number'],
         'error': json['error'] == null ? undefined : json['error'],
+        'amountMinor': json['amount_minor'] == null ? undefined : json['amount_minor'],
     };
 }
 
@@ -102,6 +109,7 @@ export function WebhookEventDataToJSONTyped(value?: WebhookEventData | null, ign
         'shipment_number': value['shipmentNumber'],
         'tracking_number': value['trackingNumber'],
         'error': value['error'],
+        'amount_minor': value['amountMinor'],
     };
 }
 
