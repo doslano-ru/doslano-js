@@ -52,6 +52,12 @@ export interface RecipientInput {
      */
     inn?: string;
     /**
+     * Email получателя для уведомления-копии (опционально). После отправки письма получателю на этот адрес приходит письмо со ссылкой на электронную версию (страница /receive). Пустой/опущен — уведомление не шлётся; адрес указывает отправитель и отвечает за корректность.
+     * @type {string}
+     * @memberof RecipientInput
+     */
+    email?: string;
+    /**
      * Авто-резолв адреса по ИНН из ЕГРЮЛ. Работает только для party_type=organization с заданным inn: адрес и наименование берутся из реестра (DaData findById/party, головная организация), address можно не передавать. Если резолв не удался и address не передан — 422 recipient_address_unresolved; флаг без inn или не для organization — 422 recipient_resolve_requires_inn. Если передан и address — он fallback при неудаче резолва.
      * @type {boolean}
      * @memberof RecipientInput
@@ -83,6 +89,7 @@ export function RecipientInputFromJSONTyped(json: any, ignoreDiscriminator: bool
         'address': json['address'] == null ? undefined : json['address'],
         'partyType': json['party_type'] == null ? undefined : PartyTypeFromJSON(json['party_type']),
         'inn': json['inn'] == null ? undefined : json['inn'],
+        'email': json['email'] == null ? undefined : json['email'],
         'resolveAddressByInn': json['resolve_address_by_inn'] == null ? undefined : json['resolve_address_by_inn'],
     };
 }
@@ -102,6 +109,7 @@ export function RecipientInputToJSONTyped(value?: RecipientInput | null, ignoreD
         'address': value['address'],
         'party_type': PartyTypeToJSON(value['partyType']),
         'inn': value['inn'],
+        'email': value['email'],
         'resolve_address_by_inn': value['resolveAddressByInn'],
     };
 }
