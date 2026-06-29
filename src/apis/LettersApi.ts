@@ -45,6 +45,16 @@ export interface CreateLetterOperationRequest {
     idempotencyKey?: string;
 }
 
+export interface DownloadRecipientInventoryPdfRequest {
+    id: string;
+    recipientId: string;
+}
+
+export interface DownloadRecipientReceiptPdfRequest {
+    id: string;
+    recipientId: string;
+}
+
 export interface GetLetterRequest {
     id: string;
 }
@@ -114,6 +124,106 @@ export class LettersApi extends runtime.BaseAPI {
      */
     async createLetter(requestParameters: CreateLetterOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DryRunResult> {
         const response = await this.createLetterRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Скачать PDF описи вложения (форма 107, версия отправителя) по отправлению конкретному получателю. Доступен после передачи в Почту (получатель в статусе `sent`/`delivered`); иначе `404`. Требуется scope `letters:read`.
+     * PDF описи вложения получателя
+     */
+    async downloadRecipientInventoryPdfRaw(requestParameters: DownloadRecipientInventoryPdfRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling downloadRecipientInventoryPdf().'
+            );
+        }
+
+        if (requestParameters['recipientId'] == null) {
+            throw new runtime.RequiredError(
+                'recipientId',
+                'Required parameter "recipientId" was null or undefined when calling downloadRecipientInventoryPdf().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("apiKey", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/letters/{id}/recipients/{recipient_id}/inventory.pdf`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))).replace(`{${"recipient_id"}}`, encodeURIComponent(String(requestParameters['recipientId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.BlobApiResponse(response);
+    }
+
+    /**
+     * Скачать PDF описи вложения (форма 107, версия отправителя) по отправлению конкретному получателю. Доступен после передачи в Почту (получатель в статусе `sent`/`delivered`); иначе `404`. Требуется scope `letters:read`.
+     * PDF описи вложения получателя
+     */
+    async downloadRecipientInventoryPdf(requestParameters: DownloadRecipientInventoryPdfRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+        const response = await this.downloadRecipientInventoryPdfRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Скачать PDF фискального чека (54-ФЗ) по отправлению конкретному получателю. Доступен, когда чек пробит и его PDF сохранён у нас (получатель в статусе `sent`/`delivered`); иначе `404`. Требуется scope `letters:read`.
+     * PDF фискального чека получателя
+     */
+    async downloadRecipientReceiptPdfRaw(requestParameters: DownloadRecipientReceiptPdfRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling downloadRecipientReceiptPdf().'
+            );
+        }
+
+        if (requestParameters['recipientId'] == null) {
+            throw new runtime.RequiredError(
+                'recipientId',
+                'Required parameter "recipientId" was null or undefined when calling downloadRecipientReceiptPdf().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("apiKey", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/letters/{id}/recipients/{recipient_id}/receipt.pdf`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))).replace(`{${"recipient_id"}}`, encodeURIComponent(String(requestParameters['recipientId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.BlobApiResponse(response);
+    }
+
+    /**
+     * Скачать PDF фискального чека (54-ФЗ) по отправлению конкретному получателю. Доступен, когда чек пробит и его PDF сохранён у нас (получатель в статусе `sent`/`delivered`); иначе `404`. Требуется scope `letters:read`.
+     * PDF фискального чека получателя
+     */
+    async downloadRecipientReceiptPdf(requestParameters: DownloadRecipientReceiptPdfRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+        const response = await this.downloadRecipientReceiptPdfRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

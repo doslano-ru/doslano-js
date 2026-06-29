@@ -75,6 +75,24 @@ export interface Recipient {
      * @memberof Recipient
      */
     error?: string;
+    /**
+     * Ссылка на скачивание PDF фискального чека (54-ФЗ) этому получателю через наш API (см. `GET /v1/letters/{id}/recipients/{recipient_id}/receipt.pdf`). Присутствует, только когда чек пробит и его PDF сохранён у нас (получатель в статусе `sent`/`delivered`).
+     * @type {string}
+     * @memberof Recipient
+     */
+    receiptPdf?: string;
+    /**
+     * Ссылка на фискальный чек на сайте ОФД (1-ОФД). Присутствует, когда чек пробит (получатель `sent`/`delivered`). Может присутствовать и без `receipt_pdf` — когда наш PDF недоступен (link_only).
+     * @type {string}
+     * @memberof Recipient
+     */
+    receiptUrl?: string;
+    /**
+     * Ссылка на скачивание PDF описи вложения (форма 107, версия отправителя) через наш API (см. `GET /v1/letters/{id}/recipients/{recipient_id}/inventory.pdf`). Присутствует, когда опись сформирована и отправление передано в Почту (получатель в статусе `sent`/`delivered`).
+     * @type {string}
+     * @memberof Recipient
+     */
+    inventoryPdf?: string;
 }
 
 
@@ -107,6 +125,9 @@ export function RecipientFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'trackingNumber': json['tracking_number'] == null ? undefined : json['tracking_number'],
         'priceMinor': json['price_minor'] == null ? undefined : json['price_minor'],
         'error': json['error'] == null ? undefined : json['error'],
+        'receiptPdf': json['receipt_pdf'] == null ? undefined : json['receipt_pdf'],
+        'receiptUrl': json['receipt_url'] == null ? undefined : json['receipt_url'],
+        'inventoryPdf': json['inventory_pdf'] == null ? undefined : json['inventory_pdf'],
     };
 }
 
@@ -129,6 +150,9 @@ export function RecipientToJSONTyped(value?: Recipient | null, ignoreDiscriminat
         'tracking_number': value['trackingNumber'],
         'price_minor': value['priceMinor'],
         'error': value['error'],
+        'receipt_pdf': value['receiptPdf'],
+        'receipt_url': value['receiptUrl'],
+        'inventory_pdf': value['inventoryPdf'],
     };
 }
 

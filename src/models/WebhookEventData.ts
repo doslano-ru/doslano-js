@@ -61,6 +61,24 @@ export interface WebhookEventData {
      * @memberof WebhookEventData
      */
     amountMinor?: number;
+    /**
+     * Ссылка на скачивание PDF фискального чека (54-ФЗ) через наш API. Колбэк `recipient.sent` уходит ПОСЛЕ готовности чека, поэтому поле в нём присутствует (вместе с `receipt_url`).
+     * @type {string}
+     * @memberof WebhookEventData
+     */
+    receiptPdf?: string;
+    /**
+     * Ссылка на фискальный чек на сайте ОФД (1-ОФД). Может присутствовать и без `receipt_pdf` (link_only — наш PDF недоступен).
+     * @type {string}
+     * @memberof WebhookEventData
+     */
+    receiptUrl?: string;
+    /**
+     * Ссылка на скачивание PDF описи вложения (форма 107, версия отправителя) через наш API. Присутствует в `recipient.sent` и `recipient.delivered`, когда опись сформирована.
+     * @type {string}
+     * @memberof WebhookEventData
+     */
+    inventoryPdf?: string;
 }
 
 /**
@@ -89,6 +107,9 @@ export function WebhookEventDataFromJSONTyped(json: any, ignoreDiscriminator: bo
         'trackingNumber': json['tracking_number'] == null ? undefined : json['tracking_number'],
         'error': json['error'] == null ? undefined : json['error'],
         'amountMinor': json['amount_minor'] == null ? undefined : json['amount_minor'],
+        'receiptPdf': json['receipt_pdf'] == null ? undefined : json['receipt_pdf'],
+        'receiptUrl': json['receipt_url'] == null ? undefined : json['receipt_url'],
+        'inventoryPdf': json['inventory_pdf'] == null ? undefined : json['inventory_pdf'],
     };
 }
 
@@ -110,6 +131,9 @@ export function WebhookEventDataToJSONTyped(value?: WebhookEventData | null, ign
         'tracking_number': value['trackingNumber'],
         'error': value['error'],
         'amount_minor': value['amountMinor'],
+        'receipt_pdf': value['receiptPdf'],
+        'receipt_url': value['receiptUrl'],
+        'inventory_pdf': value['inventoryPdf'],
     };
 }
 
