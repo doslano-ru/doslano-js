@@ -22,25 +22,25 @@ import {
 } from './PartyType';
 
 /**
- * 
+ * Отправитель. Любое поле можно опустить — оно берётся из профиля аккаунта (ЛК). Например, передайте только `email`, чтобы переопределить почту плательщика для кассового чека, а имя/адрес оставить из профиля. Если `sender` не передан целиком — весь отправитель берётся из профиля.
  * @export
  * @interface SenderInput
  */
 export interface SenderInput {
     /**
-     * ФИО или название отправителя.
+     * ФИО или название отправителя. Не указано — из профиля ЛК.
      * @type {string}
      * @memberof SenderInput
      */
-    name: string;
+    name?: string;
     /**
-     * Адрес отправителя (строкой; нормализуется на нашей стороне).
+     * Адрес отправителя (строкой; нормализуется). Не указан — из профиля ЛК.
      * @type {string}
      * @memberof SenderInput
      */
-    address: string;
+    address?: string;
     /**
-     * 
+     * Email отправителя (плательщика) для кассового чека. Не указан — из профиля ЛК.
      * @type {string}
      * @memberof SenderInput
      */
@@ -52,7 +52,7 @@ export interface SenderInput {
      */
     partyType?: PartyType;
     /**
-     * ИНН (для юр. лиц/ИП).
+     * ИНН (для юр. лиц/ИП). Не указан — из профиля ЛК.
      * @type {string}
      * @memberof SenderInput
      */
@@ -65,8 +65,6 @@ export interface SenderInput {
  * Check if a given object implements the SenderInput interface.
  */
 export function instanceOfSenderInput(value: object): value is SenderInput {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('address' in value) || value['address'] === undefined) return false;
     return true;
 }
 
@@ -80,8 +78,8 @@ export function SenderInputFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'name': json['name'],
-        'address': json['address'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'address': json['address'] == null ? undefined : json['address'],
         'email': json['email'] == null ? undefined : json['email'],
         'partyType': json['party_type'] == null ? undefined : PartyTypeFromJSON(json['party_type']),
         'inn': json['inn'] == null ? undefined : json['inn'],
