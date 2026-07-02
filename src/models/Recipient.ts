@@ -76,6 +76,12 @@ export interface Recipient {
      */
     error?: string;
     /**
+     * Письмо отправляется/отправлено на адрес, усечённый до номера дома (сработало согласие `allow_address_truncation`). Поле `address` содержит фактический адрес отправки. Отсутствие поля эквивалентно false.
+     * @type {boolean}
+     * @memberof Recipient
+     */
+    addressTruncationApplied?: boolean;
+    /**
      * Ссылка на скачивание PDF фискального чека (54-ФЗ) этому получателю через наш API (см. `GET /v1/letters/{id}/recipients/{recipient_id}/receipt.pdf`). Присутствует, только когда чек пробит и его PDF сохранён у нас (получатель в статусе `sent`/`delivered`).
      * @type {string}
      * @memberof Recipient
@@ -125,6 +131,7 @@ export function RecipientFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'trackingNumber': json['tracking_number'] == null ? undefined : json['tracking_number'],
         'priceMinor': json['price_minor'] == null ? undefined : json['price_minor'],
         'error': json['error'] == null ? undefined : json['error'],
+        'addressTruncationApplied': json['address_truncation_applied'] == null ? undefined : json['address_truncation_applied'],
         'receiptPdf': json['receipt_pdf'] == null ? undefined : json['receipt_pdf'],
         'receiptUrl': json['receipt_url'] == null ? undefined : json['receipt_url'],
         'inventoryPdf': json['inventory_pdf'] == null ? undefined : json['inventory_pdf'],
@@ -150,6 +157,7 @@ export function RecipientToJSONTyped(value?: Recipient | null, ignoreDiscriminat
         'tracking_number': value['trackingNumber'],
         'price_minor': value['priceMinor'],
         'error': value['error'],
+        'address_truncation_applied': value['addressTruncationApplied'],
         'receipt_pdf': value['receiptPdf'],
         'receipt_url': value['receiptUrl'],
         'inventory_pdf': value['inventoryPdf'],

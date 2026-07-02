@@ -63,6 +63,12 @@ export interface RecipientInput {
      * @memberof RecipientInput
      */
     resolveAddressByInn?: boolean;
+    /**
+     * Согласие на усечение адреса до номера дома, если полный адрес не проходит в Почте России (ЕПС валидирует адреса по ГАР, где помещение/офис/комната часто не зарегистрированы). Усечённая форма готовится автоматически (только когда дом распознан ФИАС). Триггеры: провал валидации адреса Почтой — проверка не блокирует письмо, пока есть варианты (административная форма → муниципальная → усечённая до дома), — и ошибка сохранения отправления SHIPMENT_ERROR — варианты перебираются сразу, без повторных попыток отправки. (Ошибка регистрации EPS_61_INVALID_ADDRESS обрабатывается независимо существующим механизмом муниципального fallback-адреса, без усечения.) Письмо, ушедшее на усечённый адрес, помечается `address_truncation_applied: true` у получателя. Если не помог ни один вариант — стандартная ошибка (422 при создании либо `failed` + возврат средств).
+     * @type {boolean}
+     * @memberof RecipientInput
+     */
+    allowAddressTruncation?: boolean;
 }
 
 
@@ -91,6 +97,7 @@ export function RecipientInputFromJSONTyped(json: any, ignoreDiscriminator: bool
         'inn': json['inn'] == null ? undefined : json['inn'],
         'email': json['email'] == null ? undefined : json['email'],
         'resolveAddressByInn': json['resolve_address_by_inn'] == null ? undefined : json['resolve_address_by_inn'],
+        'allowAddressTruncation': json['allow_address_truncation'] == null ? undefined : json['allow_address_truncation'],
     };
 }
 
@@ -111,6 +118,7 @@ export function RecipientInputToJSONTyped(value?: RecipientInput | null, ignoreD
         'inn': value['inn'],
         'email': value['email'],
         'resolve_address_by_inn': value['resolveAddressByInn'],
+        'allow_address_truncation': value['allowAddressTruncation'],
     };
 }
 
